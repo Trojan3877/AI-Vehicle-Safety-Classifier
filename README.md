@@ -40,3 +40,5 @@ if __name__ == "__main__":
     model = build_model()
     model.fit(X, y, epochs=10, batch_size=32, validation_split=0.2)
     model.save("safety_classifier.h5")
+
+![Classifier Logic](./images/classifier_logic.png)
