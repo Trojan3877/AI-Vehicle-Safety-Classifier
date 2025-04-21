@@ -1,4 +1,5 @@
 # AI Vehicle Safety Classifier 🚗🔍
+![image](https://github.com/user-attachments/assets/338e158c-a469-4280-bf31-3de13a412a45)
 
 This project implements a vehicle safety classification system using both **rule-based logic** and a **simulated machine learning approach** (logistic-style scoring). Written in **C++**, it demonstrates modular design, metric evaluation, and real-world data interpretation.
 
