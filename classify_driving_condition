@@ -47,3 +47,19 @@ if __name__ == "__main__":
     model = load_model(model_path)
     result = classify_driving_condition(model, image, threshold=DEFAULT_THRESHOLD)
     print(f"Driving condition: {result}")
+
+vehicle_safety_classifier/
+├── include/
+│   └── classifier.h
+├── src/
+│   ├── main.cpp
+│   ├── classifier.cpp
+│   └── metrics.cpp
+├── data/
+│   └── vehicles.csv
+├── results/
+│   └── evaluation.txt
+├── predict.py
+├── classify_conditions.py
+├── LICENSE
+├── README.md
