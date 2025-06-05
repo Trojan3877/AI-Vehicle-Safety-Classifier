@@ -1,0 +1,9 @@
+# For Python mirror script or visualization
+numpy
+matplotlib
+pytest
+
+# Linting / formatting
+black
+flake8
+mypy
