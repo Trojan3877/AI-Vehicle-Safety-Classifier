@@ -1,0 +1,31 @@
+# Binary / build artifacts
+build/
+bin/
+*.exe
+*.o
+*.obj
+*.so
+*.dll
+
+# Python caches
+__pycache__/
+*.py[cod]
+
+# IDE/editor folders
+.vscode/
+.idea/
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Data folders (if you’re generating CSVs/PNGs locally)
+data/raw/
+data/processed/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker overrides
+docker-compose.override.yml
