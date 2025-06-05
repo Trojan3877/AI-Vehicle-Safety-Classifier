@@ -1,3 +1,13 @@
+# AI Vehicle Safety Classifier
+
+![CI](https://img.shields.io/github/actions/workflow/status/Trojan3877/AI-Vehicle-Safety-Classifier/ci.yml?branch=main)
+![License](https://img.shields.io/github/license/Trojan3877/AI-Vehicle-Safety-Classifier)
+![GitHub issues](https://img.shields.io/github/issues/Trojan3877/AI-Vehicle-Safety-Classifier)
+![GitHub top language](https://img.shields.io/github/languages/top/Trojan3877/AI-Vehicle-Safety-Classifier)
+
+
+
+
 # AI Vehicle Safety Classifier 🚗🔍
 ![image](https://github.com/user-attachments/assets/338e158c-a469-4280-bf31-3de13a412a45)
 
