@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up C++ (Install dependencies)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+
+      - name: Build C++ classifier
+        run: |
+          mkdir -p build bin
+          g++ -std=c++17 -Wall -O2 src/*.cpp -Iinclude -o bin/vehicle_safety_classifier
+
+      - name: Build and run C++ unit tests
+        run: |
+          mkdir -p build/tests
+          g++ -std=c++17 -Wall -O2 tests/*.cpp -Iinclude -o bin/run_tests
+          bin/run_tests
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Python dev dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Lint Python code
+        run: |
+          flake8 .
+
+      - name: Run Python tests
+        run: |
+          pytest --maxfail=1 --disable-warnings -q
