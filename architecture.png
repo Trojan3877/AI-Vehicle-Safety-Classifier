@@ -1,0 +1,1 @@
+Video Frame → OpenCV preprocessing → CNN model (TensorFlow/PyTorch) → Risk Score → Alert
