@@ -1,5 +1,9 @@
 # AI Vehicle Safety Classifier (C++)
+## 🔄 Vehicle Safety Scoring Flowchart
 
+This diagram explains how the model processes weather, road, and vehicle conditions to generate a safety score from 1 (Safe) to 10 (Critical):
+
+![Vehicle Safety Scorer](vehicle_safety_scorer_diagram.png)
 ![MIT License](https://img.shields.io/badge/license-MIT-green.svg)
 ![GitHub repo stars](https://img.shields.io/github/stars/Trojan3877/AI-Vehicle-Safety-Classifier?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/Trojan3877/AI-Vehicle-Safety-Classifier?style=social)
