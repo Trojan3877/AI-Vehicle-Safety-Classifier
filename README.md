@@ -8,6 +8,7 @@
 [![Coverage](https://img.shields.io/badge/coverage-95%25-blue)](#)
 [![codecov](https://codecov.io/gh/Trojan3877/Vehicle-Safety-Classifier/branch/main/graph/badge.svg)](https://codecov.io/gh/Trojan3877/Vehicle-Safety-Classifier)
 
+
 An AI-powered tool that classifies **driving conditions** (weather, visibility, traffic, driver state) into a **safety score** and **risk level**.  
 Designed to be **MCP-compatible** and **n8n automation-ready** for seamless integration with AI agents and workflow orchestration tools.
 
