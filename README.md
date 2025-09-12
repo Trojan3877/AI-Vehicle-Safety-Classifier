@@ -1,16 +1,33 @@
-# AI Vehicle Safety Classifier (C++)
-## 🔄 Vehicle Safety Scoring Flowchart
+# 🚗 AI Vehicle Safety Classifier
 
-This diagram explains how the model processes weather, road, and vehicle conditions to generate a safety score from 1 (Safe) to 10 (Critical):
-https://codecov.io/gh/Trojan3877/AI-Vehicle-Safety-Classifier/branch/main/graph/badge.svg
-![Vehicle Safety Scorer](vehicle_safety_scorer_diagram.png)
-![MIT License](https://img.shields.io/badge/license-MIT-green.svg)
-![GitHub repo stars](https://img.shields.io/github/stars/Trojan3877/AI-Vehicle-Safety-Classifier?style=social)
-![GitHub forks](https://img.shields.io/github/forks/Trojan3877/AI-Vehicle-Safety-Classifier?style=social)
-![Build passing](https://img.shields.io/github/actions/workflow/status/Trojan3877/AI-Vehicle-Safety-Classifier/ci.yml?branch=main)
-![C++](https://img.shields.io/badge/C++-17-blue)
+[![MCP Ready](https://img.shields.io/badge/MCP-Compatible-blue)](https://modelcontextprotocol.io)
+[![n8n Automation](https://img.shields.io/badge/n8n-Automation-green)](https://n8n.io)
+[![Build Status](https://img.shields.io/badge/CI-CD-orange)](#)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+An AI-powered tool that classifies **driving conditions** (weather, visibility, traffic, driver state) into a **safety score** and **risk level**.  
+Designed to be **MCP-compatible** and **n8n automation-ready** for seamless integration with AI agents and workflow orchestration tools.
 
 ---
+
+## 🔹 Features
+- ✅ Classifies driving conditions into a **0–100 safety score**  
+- ✅ Outputs **risk level**: low, medium, or high  
+- ✅ Provides **explanation** for transparency  
+- ✅ Integrates with **Model Context Protocol (MCP)**  
+- ✅ Connects to **n8n** for automated workflows (Slack, Google Sheets, Alerts)  
+
+---
+
+## 🔹 Project Structure
+
+├── mcp_config.json # MCP tool definition
+├── mcp_adapter.py # Adapter to bridge classifier with MCP
+├── n8n_webhook.py # Webhook server for n8n automation
+├── vehicle_safety_workflow.json # Ready-to-import n8n workflow
+├── predict.py # Classifier logic
+├── requirements.txt # Dependencies
+└── README.md # Documentation
 
 ## Overview
 
