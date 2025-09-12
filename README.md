@@ -61,6 +61,8 @@ C++ implementation ensures **high performance and low latency** — key for embe
 
 ![Architecture Diagram](docs/architecture.png)
 
+<img width="3000" height="1800" alt="vehicle_safety_workflow" src="https://github.com/user-attachments/assets/c603ad16-4230-419f-ae44-065cb25852fb" />
+
 ---
 
 ## Key Results
