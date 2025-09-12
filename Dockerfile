@@ -1,39 +1,30 @@
-# Base image with GCC and Python
-FROM ubuntu:20.04
+# Use an official lightweight Python image
+FROM python:3.10-slim
 
-# Prevent interactive prompts
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install system dependencies
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-      build-essential \
-      g++ \
-      cmake \
-      python3 \
-      python3-pip \
-      && rm -rf /var/lib/apt/lists/*
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 # Set working directory
 WORKDIR /app
 
-# Copy and build C++ code
-COPY src/ src/
-COPY include/ include/
-RUN mkdir -p build && \
-    g++ -std=c++17 -Wall -O2 src/*.cpp -Iinclude -o bin/vehicle_safety_classifier
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy Python requirements (for tests or plotting)
-COPY requirements-dev.txt .
-RUN pip3 install --no-cache-dir -r requirements-dev.txt
+# Copy requirements first (for caching layers)
+COPY requirements.txt .
 
-# Copy configs and scripts
-COPY config/ config/
-COPY bin/ bin/        # If you pre-built, else build here
-COPY results/ results/
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose any ports if you have a server component (e.g., 8000)
-# EXPOSE 8000
+# Copy project files
+COPY . .
 
-# Default entrypoint: run the classifier with a dev config
-ENTRYPOINT ["./bin/vehicle_safety_classifier", "--config", "config/dev.yaml"]
+# Expose Flask port
+EXPOSE 5000
+
+# Default command: run the n8n webhook server
+CMD ["python", "n8n_webhook.py"]
