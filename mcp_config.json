@@ -1,0 +1,29 @@
+{
+  "name": "vehicle_safety_classifier",
+  "description": "An AI tool that classifies driving conditions and vehicle safety risks.",
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "classify_conditions",
+      "description": "Classify driving conditions (weather, visibility, traffic, driver state) into a safety score.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "weather": { "type": "string", "example": "rain, snow, clear" },
+          "visibility": { "type": "string", "example": "low, medium, high" },
+          "traffic": { "type": "string", "example": "light, moderate, heavy" },
+          "driver_state": { "type": "string", "example": "alert, drowsy, distracted" }
+        },
+        "required": ["weather", "visibility", "traffic", "driver_state"]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "safety_score": { "type": "number", "minimum": 0, "maximum": 100 },
+          "risk_level": { "type": "string", "enum": ["low", "medium", "high"] },
+          "explanation": { "type": "string" }
+        }
+      }
+    }
+  ]
+}
