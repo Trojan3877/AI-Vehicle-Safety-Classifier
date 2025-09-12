@@ -1,0 +1,93 @@
+{
+  "name": "Vehicle Safety Classifier Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "vehicle-safety",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:5000/n8n/classify",
+        "method": "POST",
+        "authentication": "none",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={ \"tool\": \"classify_conditions\", \"input\": { \"weather\": $json[\"weather\"], \"visibility\": $json[\"visibility\"], \"traffic\": $json[\"traffic\"], \"driver_state\": $json[\"driver_state\"] } }"
+      },
+      "id": "2",
+      "name": "Call MCP Classifier",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "channel": "alerts",
+        "text": "=Vehicle Safety Alert 🚨\\nScore: {{$json[\"safety_score\"]}}\\nRisk Level: {{$json[\"risk_level\"]}}\\nExplanation: {{$json[\"explanation\"]}}"
+      },
+      "id": "3",
+      "name": "Send Slack Alert",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [750, 200],
+      "credentials": {
+        "slackApi": "YOUR_SLACK_CREDENTIAL"
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "sheetId": "YOUR_SHEET_ID",
+        "range": "A:D",
+        "options": {},
+        "valueInputMode": "USER_ENTERED",
+        "data": "={{ [ $json[\"safety_score\"], $json[\"risk_level\"], $json[\"explanation\"], new Date().toISOString() ] }}"
+      },
+      "id": "4",
+      "name": "Log to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 1,
+      "position": [750, 400],
+      "credentials": {
+        "googleSheetsOAuth2Api": "YOUR_GOOGLE_SHEETS_CREDENTIAL"
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Call MCP Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call MCP Classifier": {
+      "main": [
+        [
+          {
+            "node": "Send Slack Alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
