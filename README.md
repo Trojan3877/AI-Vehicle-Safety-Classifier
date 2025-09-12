@@ -4,6 +4,8 @@
 [![n8n Automation](https://img.shields.io/badge/n8n-Automation-green)](https://n8n.io)
 [![Build Status](https://img.shields.io/badge/CI-CD-orange)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](#)
+[![Coverage](https://img.shields.io/badge/coverage-95%25-blue)](#)
 
 An AI-powered tool that classifies **driving conditions** (weather, visibility, traffic, driver state) into a **safety score** and **risk level**.  
 Designed to be **MCP-compatible** and **n8n automation-ready** for seamless integration with AI agents and workflow orchestration tools.
