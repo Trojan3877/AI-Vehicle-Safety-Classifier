@@ -1,0 +1,15 @@
+artifacts/
+│
+├── model/
+│   ├── best_model.keras
+│   ├── confusion_matrix.png
+│   ├── metrics.txt
+│   ├── model_summary.txt
+│   ├── training_history.pkl
+│   ├── classification_report.txt
+│   ├── auc_score.txt
+│   └── label_mapping.txt
+│
+└── logs/
+    ├── training.log
+    └── system.log
