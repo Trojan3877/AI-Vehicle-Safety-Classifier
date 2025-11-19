@@ -1,119 +1,104 @@
-"""
-AI Vehicle Safety Classifier - Training Script
+
+AI Vehicle Safety Classifier — Training Pipeline
 Author: Corey Leath (Trojan3877)
-L5/L6 Production-Ready Version
+L5/L6 Production-Ready Architecture
 
-Usage:
-    python src/train.py --config config/config.yaml
-
-Description:
-    Loads dataset, preprocesses images, trains a CNN classifier,
-    saves the trained model, and outputs metrics + visualizations.
+Handles:
+✔ Model creation (custom CNN or transfer learning)
+✔ Data loading via ImageDataGenerators
+✔ Early stopping + checkpointing
+✔ Training history saving
+✔ Evaluation + metrics export
 """
 
-import argparse
-import logging
-import yaml
 import os
-import numpy as np
+import yaml
+import pickle
 import tensorflow as tf
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report, confusion_matrix
 
-from utils import (
-    load_dataset,
-    build_cnn_model,
-    preprocess_batch,
-    save_model_with_versioning,
-    plot_training_metrics,
-    plot_confusion_matrix,
-)
-
-# -------------------------------------------------------------
-# Argument Parser
-# -------------------------------------------------------------
-def parse_args():
-    parser = argparse.ArgumentParser(description="Train Vehicle Safety Classifier Model")
-    parser.add_argument(
-        "--config",
-        type=str,
-        required=True,
-        help="Path to the YAML configuration file",
-    )
-    return parser.parse_args()
+from model import create_model
+from data import build_generators
 
 
-# -------------------------------------------------------------
-# Main Training Function
-# -------------------------------------------------------------
-def main(config_path):
-    # Load config
+# ---------------------------------------------------------------------
+# Load config
+# ---------------------------------------------------------------------
+def load_config(config_path="config/config.yaml"):
     with open(config_path, "r") as f:
-        cfg = yaml.safe_load(f)
+        return yaml.safe_load(f)
 
-    # Logging Config
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
+
+# ---------------------------------------------------------------------
+# Train the model
+# ---------------------------------------------------------------------
+def train_model(config_path="config/config.yaml", use_transfer_learning=False):
+
+    # Load configuration
+    config = load_config(config_path)
+
+    # Load data
+    train_gen, val_gen, test_gen = build_generators(config_path)
+
+    # Load/create model
+    model = create_model(config_path=config_path,
+                         use_transfer_learning=use_transfer_learning)
+
+    # Create training dirs
+    model_dir = config["paths"]["model_dir"]
+    os.makedirs(model_dir, exist_ok=True)
+
+    # -----------------------------------------------------------------
+    # Callbacks — L6 professional pipeline
+    # -----------------------------------------------------------------
+    early_stop = tf.keras.callbacks.EarlyStopping(
+        monitor="val_loss",
+        patience=config["training"]["early_stopping_patience"],
+        restore_best_weights=True
     )
 
-    logging.info("Loading dataset from: %s", cfg["data"]["path"])
-    X, y, class_names = load_dataset(cfg)
-
-    # Train/Validation Split
-    logging.info("Splitting dataset...")
-    X_train, X_val, y_train, y_val = train_test_split(
-        X,
-        y,
-        test_size=cfg["training"]["validation_split"],
-        random_state=42,
-        stratify=y,
+    checkpoint_path = os.path.join(model_dir, "best_model.keras")
+    checkpoint = tf.keras.callbacks.ModelCheckpoint(
+        filepath=checkpoint_path,
+        save_best_only=True,
+        save_weights_only=False,
+        monitor="val_loss",
+        mode="min"
     )
 
-    logging.info("Building CNN model...")
-    model = build_cnn_model(
-        input_shape=cfg["model"]["input_shape"],
-        num_classes=len(class_names),
-        dropout_rate=cfg["model"]["dropout"],
-    )
-
-    model.compile(
-        optimizer=tf.keras.optimizers.Adam(learning_rate=cfg["training"]["learning_rate"]),
-        loss="sparse_categorical_crossentropy",
-        metrics=["accuracy"],
-    )
-
-    logging.info("Starting training...")
+    # -----------------------------------------------------------------
+    # Train model
+    # -----------------------------------------------------------------
     history = model.fit(
-        preprocess_batch(X_train),
-        y_train,
-        validation_data=(preprocess_batch(X_val), y_val),
-        epochs=cfg["training"]["epochs"],
-        batch_size=cfg["training"]["batch_size"],
+        train_gen,
+        validation_data=val_gen,
+        epochs=config["training"]["epochs"],
+        callbacks=[early_stop, checkpoint],
+        verbose=1
     )
 
-    # Save model with automatic versioning
-    model_path = save_model_with_versioning(model, cfg)
-    logging.info("Model saved at: %s", model_path)
+    # -----------------------------------------------------------------
+    # Save training history for plotting later
+    # -----------------------------------------------------------------
+    history_path = os.path.join(model_dir, "training_history.pkl")
+    with open(history_path, "wb") as f:
+        pickle.dump(history.history, f)
 
-    # Generate predictions for metrics
-    y_pred = np.argmax(model.predict(preprocess_batch(X_val)), axis=1)
+    # -----------------------------------------------------------------
+    # Evaluate on test set
+    # -----------------------------------------------------------------
+    test_loss, test_acc = model.evaluate(test_gen, verbose=1)
 
-    logging.info("Classification Report:\n%s", classification_report(y_val, y_pred, target_names=class_names))
+    # -----------------------------------------------------------------
+    # Save evaluation metrics
+    # -----------------------------------------------------------------
+    metrics_path = os.path.join(model_dir, "metrics.txt")
+    with open(metrics_path, "w") as f:
+        f.write(f"Test Accuracy: {test_acc:.4f}\n")
+        f.write(f"Test Loss: {test_loss:.4f}\n")
 
-    # Confusion Matrix
-    cm = confusion_matrix(y_val, y_pred)
-    plot_confusion_matrix(cm, class_names, output_dir=cfg["paths"]["metrics"])
+    print("\nTraining complete!")
+    print(f"Best model saved to: {checkpoint_path}")
+    print(f"Metrics saved to:   {metrics_path}")
+    print(f"History saved to:   {history_path}")
 
-    # Training Curves
-    plot_training_metrics(history, output_dir=cfg["paths"]["metrics"])
-
-    logging.info("Training complete! All metrics exported successfully.")
-
-
-# -------------------------------------------------------------
-# Entry Point
-# -------------------------------------------------------------
-if __name__ == "__main__":
-    args = parse_args()
-    main(args.config)
+    return model
