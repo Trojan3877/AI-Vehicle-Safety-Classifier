@@ -1,0 +1,61 @@
+# =====================================================================
+# AI Vehicle Safety Classifier — Configuration File
+# Author: Corey Leath (Trojan3877)
+# L5/L6 Production-Ready Configuration
+# =====================================================================
+
+# ---------------------------------------------------------
+# Dataset Configuration
+# ---------------------------------------------------------
+data:
+  path: "data"                  # Folder containing images/labels
+  labels: "labels.csv"          # CSV file with image paths + labels
+  image_folder: "images"        # Subfolder with vehicle images
+
+# ---------------------------------------------------------
+# Model Configuration
+# ---------------------------------------------------------
+model:
+  input_shape: [224, 224, 3]    # Image size for CNN
+  num_classes: 3                # safe, unsafe, moderate
+  dropout_rate: 0.3             # Regularization
+  learning_rate: 0.0005         # Optimizer LR
+
+# ---------------------------------------------------------
+# Training Configuration
+# ---------------------------------------------------------
+training:
+  batch_size: 32
+  epochs: 15
+  validation_split: 0.2
+  shuffle: true
+
+# ---------------------------------------------------------
+# Paths & Saving
+# ---------------------------------------------------------
+paths:
+  model_dir: "models"           # Where trained models will be saved
+  metrics_dir: "metrics"        # Training metrics, confusion matrix
+  logs_dir: "logs"              # Training logs
+
+# ---------------------------------------------------------
+# Inference Configuration
+# ---------------------------------------------------------
+inference:
+  target_size: [224, 224]       # Resize images for predict.py
+
+# ---------------------------------------------------------
+# Logging
+# ---------------------------------------------------------
+logging:
+  level: "INFO"
+  save_to_file: true
+  filename: "training.log"
+
+# ---------------------------------------------------------
+# Version
+# ---------------------------------------------------------
+project:
+  version: "1.0.0"
+  author: "Corey Leath"
+  description: "AI Vehicle Safety Classifier — CNN-based model for detecting safe vs. unsafe vehicle conditions."
