@@ -1,5 +1,4 @@
 # 🚗 AI Vehicle Safety Classifier
-# 🚗 AI Vehicle Safety Classifier  
 ### **A Production-Ready ML System for Classifying Safe vs. Unsafe Driving Conditions**  
 **Author:** Corey Leath (GitHub: [Trojan3877](https://github.com/Trojan3877))  
 **Level:** L5/L6 Machine Learning Engineer Project  
