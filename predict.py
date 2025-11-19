@@ -1,58 +1,109 @@
-# predict.py
-# Author: Corey Leath (coreyleath10@gmail.com)
-# Purpose: Inference script for the AI-Driven Autonomous Vehicle Safety Classifier.
-# This script loads a trained TensorFlow model and predicts if a driving condition
-# image is "Safe" or "Unsafe," designed for autonomous vehicle safety applications.
+"""
+AI Vehicle Safety Classifier — Inference (Prediction) Module
+Author: Corey Leath (Trojan3877)
+L5/L6 Production-Ready Architecture
 
-import tensorflow as tf  # TensorFlow for model loading and prediction
-import numpy as np      # NumPy for array manipulation during preprocessing
+Handles:
+✔ Loading best saved model
+✔ Preprocessing input image
+✔ Predicting safety class
+✔ JSON-style output
+✔ Reusable for FastAPI / Streamlit / Flask
+"""
 
-def load_model(model_path):
-    """
-    Load the pre-trained safety classifier model from a file.
-    
-    Args:
-        model_path (str): Path to the saved model file (e.g., 'safety_classifier.h5').
-    
-    Returns:
-        tf.keras.Model: Loaded TensorFlow model ready for inference.
-    """
-    # Use TensorFlow's load_model to restore the trained CNN from disk
+import os
+import yaml
+import numpy as np
+import tensorflow as tf
+from tensorflow.keras.preprocessing import image
+
+
+# ---------------------------------------------------------------------
+# Load config
+# ---------------------------------------------------------------------
+def load_config(config_path="config/config.yaml"):
+    with open(config_path, "r") as f:
+        return yaml.safe_load(f)
+
+
+# ---------------------------------------------------------------------
+# Load best model
+# ---------------------------------------------------------------------
+def load_best_model(config_path="config/config.yaml"):
+    config = load_config(config_path)
+    model_path = os.path.join(config["paths"]["model_dir"], "best_model.keras")
     return tf.keras.models.load_model(model_path)
 
-def predict_image(image_path, model):
-    """
-    Preprocess an input image and predict its safety classification.
-    
-    Args:
-        image_path (str): Path to the test image file (e.g., 'test_image.jpg').
-        model (tf.keras.Model): Loaded model for inference.
-    
-    Returns:
-        str: Prediction result - "Safe" or "Unsafe" driving condition.
-    """
-    # Load and resize image to 224x224 (matching training input size)
-    img = tf.keras.preprocessing.image.load_img(image_path, target_size=(224, 224))
-    
-    # Convert image to array and normalize pixel values to [0,1] for model consistency
-    img = tf.keras.preprocessing.image.img_to_array(img) / 255.0
-    
-    # Add batch dimension (model expects shape: (1, 224, 224, 3))
-    img = np.expand_dims(img, axis=0)
-    
-    # Run inference: predict probability (0 to 1) of unsafe condition
-    pred = model.predict(img)
-    
-    # Threshold at 0.5: <0.5 = Safe, >=0.5 = Unsafe (binary classification)
-    return "Safe" if pred[0][0] < 0.5 else "Unsafe"
 
+# ---------------------------------------------------------------------
+# Preprocess image to model-ready tensor
+# ---------------------------------------------------------------------
+def preprocess_image(img_path, config_path="config/config.yaml"):
+
+    config = load_config(config_path)
+    target_size = tuple(config["model"]["input_shape"][:2])
+
+    img = image.load_img(img_path, target_size=target_size)
+    img_array = image.img_to_array(img)
+
+    # Normalize
+    img_array = img_array / 255.0
+
+    # Add batch dimension
+    img_array = np.expand_dims(img_array, axis=0)
+
+    return img_array
+
+
+# ---------------------------------------------------------------------
+# Predict class from image path
+# ---------------------------------------------------------------------
+def predict_image(img_path, config_path="config/config.yaml"):
+
+    # Load model and config
+    model = load_best_model(config_path)
+    config = load_config(config_path)
+
+    # Preprocess input
+    img_array = preprocess_image(img_path, config_path)
+
+    # Predict probabilities
+    preds = model.predict(img_array)
+    pred_index = np.argmax(preds, axis=1)[0]
+    confidence = preds[0][pred_index]
+
+    # Load label map
+    label_map_path = os.path.join(config["paths"]["model_dir"], "label_mapping.txt")
+    label_map = {}
+
+    with open(label_map_path, "r") as f:
+        for line in f:
+            idx, label = line.strip().split(": ")
+            label_map[int(idx)] = label
+
+    predicted_label = label_map[pred_index]
+
+    # JSON-style output
+    result = {
+        "predicted_class": predicted_label,
+        "confidence": float(confidence)
+    }
+
+    return result
+
+
+# ---------------------------------------------------------------------
+# CLI entry point
+# ---------------------------------------------------------------------
 if __name__ == "__main__":
-    # Entry point for standalone execution or testing
-    # Load the pre-trained model from the saved file
-    model = load_model("safety_classifier.h5")
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Predict image using Vehicle Safety Classifier")
+    parser.add_argument("image_path", help="Path to the input image")
+    parser.add_argument("--config", default="config/config.yaml", help="Path to config.yaml")
+    args = parser.parse_args()
+
+    output = predict_image(args.image_path, args.config)
     
-    # Predict safety for a sample image (replace with your test image path)
-    result = predict_image("test_image.jpg", model)
-    
-    # Output the result to console for user feedback
-    print(f"Driving Condition: {result}")
+    print("\nPrediction Result:")
+    print(output)
