@@ -1,61 +1,58 @@
-# =====================================================================
-# AI Vehicle Safety Classifier — Configuration File
+# =============================================================================
+# AI Vehicle Safety Classifier — Production Configuration
 # Author: Corey Leath (Trojan3877)
-# L5/L6 Production-Ready Configuration
-# =====================================================================
+# L5/L6 MLE Pipeline Configuration
+# =============================================================================
 
-# ---------------------------------------------------------
-# Dataset Configuration
-# ---------------------------------------------------------
-data:
-  path: "data"                  # Folder containing images/labels
-  labels: "labels.csv"          # CSV file with image paths + labels
-  image_folder: "images"        # Subfolder with vehicle images
+# -----------------------------------------------------------------------------
+# Directory Structure
+# -----------------------------------------------------------------------------
+paths:
+  train_dir: "data/train"
+  val_dir: "data/val"
+  test_dir: "data/test"
+  model_dir: "artifacts/model"
+  logs_dir: "artifacts/logs"
 
-# ---------------------------------------------------------
-# Model Configuration
-# ---------------------------------------------------------
+# -----------------------------------------------------------------------------
+# Model Settings
+# -----------------------------------------------------------------------------
 model:
-  input_shape: [224, 224, 3]    # Image size for CNN
-  num_classes: 3                # safe, unsafe, moderate
-  dropout_rate: 0.3             # Regularization
-  learning_rate: 0.0005         # Optimizer LR
+  input_shape: [224, 224, 3]     # Standard for CNNs & Transfer Learning
+  num_classes: 2                 # Safe / Unsafe
+  dropout_rate: 0.3              # Regularization
+  learning_rate: 0.0005          # Stable for CNNs & MobileNetV2
 
-# ---------------------------------------------------------
-# Training Configuration
-# ---------------------------------------------------------
+# -----------------------------------------------------------------------------
+# Training Settings
+# -----------------------------------------------------------------------------
 training:
   batch_size: 32
-  epochs: 15
-  validation_split: 0.2
-  shuffle: true
+  epochs: 25
+  early_stopping_patience: 5
 
-# ---------------------------------------------------------
-# Paths & Saving
-# ---------------------------------------------------------
-paths:
-  model_dir: "models"           # Where trained models will be saved
-  metrics_dir: "metrics"        # Training metrics, confusion matrix
-  logs_dir: "logs"              # Training logs
+# -----------------------------------------------------------------------------
+# Augmentation Settings (applied inside data.py)
+# -----------------------------------------------------------------------------
+augmentation:
+  rotation_range: 15
+  width_shift_range: 0.1
+  height_shift_range: 0.1
+  zoom_range: 0.1
+  horizontal_flip: true
 
-# ---------------------------------------------------------
-# Inference Configuration
-# ---------------------------------------------------------
+# -----------------------------------------------------------------------------
+# Evaluation Settings
+# -----------------------------------------------------------------------------
+evaluation:
+  save_confusion_matrix: true
+  save_classification_report: true
+  save_auc_score: true
+
+# -----------------------------------------------------------------------------
+# Deployment / Inference
+# -----------------------------------------------------------------------------
 inference:
-  target_size: [224, 224]       # Resize images for predict.py
-
-# ---------------------------------------------------------
-# Logging
-# ---------------------------------------------------------
-logging:
-  level: "INFO"
-  save_to_file: true
-  filename: "training.log"
-
-# ---------------------------------------------------------
-# Version
-# ---------------------------------------------------------
-project:
-  version: "1.0.0"
-  author: "Corey Leath"
-  description: "AI Vehicle Safety Classifier — CNN-based model for detecting safe vs. unsafe vehicle conditions."
+  image_preprocess:
+    normalize: true
+    target_size: [224, 224]
