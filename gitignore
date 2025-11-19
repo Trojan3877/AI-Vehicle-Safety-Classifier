@@ -1,31 +1,71 @@
-# Binary / build artifacts
-build/
-bin/
-*.exe
-*.o
-*.obj
-*.so
-*.dll
+# =============================================================================
+# AI Vehicle Safety Classifier — Production GitIgnore
+# Author: Corey Leath (Trojan3877)
+# L5/L6 Quality
+# =============================================================================
 
-# Python caches
+# ------------------------------
+# Python
+# ------------------------------
 __pycache__/
-*.py[cod]
+*.pyc
+*.pyo
+*.pyd
 
-# IDE/editor folders
-.vscode/
-.idea/
+# Virtual Environment
+venv/
+env/
+*.venv/
 
-# Logs and temp files
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+
+# ------------------------------
+# Model Artifacts (Large Files)
+# ------------------------------
+artifacts/model/best_model.keras
+artifacts/model/model_summary.txt
+artifacts/model/training_history.pkl
+artifacts/model/metrics.txt
+artifacts/model/confusion_matrix.png
+artifacts/model/classification_report.txt
+artifacts/model/auc_score.txt
+artifacts/model/label_mapping.txt
+
+# Do not commit massive files
+*.h5
+*.hdf5
+*.pickle
+*.pkl
+
+# ------------------------------
+# Logs & Temp Files
+# ------------------------------
+artifacts/logs/
+logs/
 *.log
 *.tmp
 
-# Data folders (if you’re generating CSVs/PNGs locally)
-data/raw/
-data/processed/
-
-# OS files
+# ------------------------------
+# OS Files
+# ------------------------------
 .DS_Store
 Thumbs.db
 
-# Docker overrides
-docker-compose.override.yml
+# ------------------------------
+# IDE / Editor Files
+# ------------------------------
+.vscode/
+.idea/
+
+# ------------------------------
+# Data directories
+# ------------------------------
+data/train/
+data/val/
+data/test/
+
+# Never upload raw datasets to GitHub
+*.zip
+*.tar.gz
+*.npz
