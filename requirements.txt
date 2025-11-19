@@ -1,0 +1,29 @@
+# Core Scientific Libraries
+numpy==1.26.4
+pandas==2.2.2
+scikit-learn==1.4.2
+opencv-python==4.9.0.80
+matplotlib==3.8.4
+seaborn==0.13.2
+
+# Deep Learning Framework
+tensorflow==2.16.1          # GPU-enabled if NVIDIA drivers installed
+
+# Utility Libraries
+tqdm==4.66.2
+pyyaml==6.0.1
+
+# Testing & Code Quality
+pytest==8.1.1
+flake8==7.0.0
+black==24.3.0
+mypy==1.9.0
+
+# API / Deployment (optional)
+fastapi==0.110.0
+uvicorn[standard]==0.29.0
+streamlit==1.33.0
+
+# Serialization & Model Export
+joblib==1.4.2
+onnxruntime==1.17.3
