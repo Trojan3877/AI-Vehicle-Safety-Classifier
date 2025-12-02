@@ -2,9 +2,7 @@
 ### **A Production-Ready ML System for Classifying Safe vs. Unsafe Driving Conditions**  
 **Author:** Corey Leath (GitHub: [Trojan3877](https://github.com/Trojan3877))  
 **Level:** L5/L6 Machine Learning Engineer Project  
----
 
-## 📊 Badges (Auto-Updated After Training/Evaluation)
 
 ![Python](https://img.shields.io/badge/Python-3.10-blue)
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-2.15-orange)
