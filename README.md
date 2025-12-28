@@ -134,6 +134,19 @@ Use TensorRT for real-time inference
 
 Add uncertainty estimation for safety-critical AI
 
+Design Questions & Reflections
+Q: What problem does this project aim to solve?
+A: This project aims to explore how machine learning can be combined with deterministic logic to assess safety in simulated vehicle scenarios, focusing on building a system that balances predictive performance with clarity and real-world constraints.
+Q: Why did I choose this hybrid ML + rule-based approach instead of a pure model?
+A: I chose a hybrid approach because safety-critical systems often need clear, interpretable rules alongside learned patterns. A pure ML model might pick up correlations that don’t hold in rare but dangerous edge cases, whereas combining learned behavior with defined safety rules helps ground decisions in understandable logic.
+Q: What were the main trade-offs I made?
+A: The main trade-off was between complexity and interpretability. A fully learned model might achieve slightly higher accuracy, but at the cost of making behavior harder to predict and trust. By integrating rule-based logic, I accepted some reduction in raw performance in exchange for improved explainability and consistent safety handling.
+Q: What didn’t work as expected?
+A: Initially, the learned component sometimes overfitted to specific scenarios in the training data and didn’t generalize well to simulated edge cases. This helped me realize that data diversity and evaluation strategy are just as important as model choice, especially for safety-related tasks.
+Q: What did I learn from building this project?
+A: I learned that engineering judgment — deciding where to rely on logic versus learned components — is often as critical as the model itself. I also gained a deeper appreciation for careful evaluation and testing, particularly in contexts where incorrect outputs carry higher consequences.
+Q: If I had more time or resources, what would I improve next?
+A: I would build stronger validation and stress-testing frameworks to simulate a wider range of edge cases, and explore uncertainty quantification techniques so the system could better express when it’s unsure rather than making overconfident predictions.
 
 
 
