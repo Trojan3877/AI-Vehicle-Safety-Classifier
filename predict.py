@@ -93,6 +93,50 @@ def predict_image(img_path, config_path="config/config.yaml"):
 
 
 # ---------------------------------------------------------------------
+# Rule-based driving condition classifier
+# ---------------------------------------------------------------------
+def classify_driving_conditions(weather: str, visibility: str, traffic: str, driver_state: str):
+    """
+    Classify driving conditions based on environmental and driver inputs.
+
+    Args:
+        weather: One of "clear", "rain", "snow", "fog", or similar.
+        visibility: One of "high", "medium", "low".
+        traffic: One of "light", "moderate", "heavy".
+        driver_state: One of "alert", "distracted", "drowsy".
+
+    Returns:
+        Tuple of (safety_score: int, risk_level: str, explanation: str)
+        where safety_score is 0–100, risk_level is "low"/"medium"/"high".
+    """
+    weather_penalty = {"clear": 0, "sunny": 0, "rain": 20, "snow": 25, "fog": 30}
+    visibility_penalty = {"high": 0, "medium": 15, "low": 30}
+    traffic_penalty = {"light": 0, "moderate": 10, "heavy": 20}
+    driver_penalty = {"alert": 0, "distracted": 20, "drowsy": 30}
+
+    penalty = (
+        weather_penalty.get(str(weather).lower(), 15)
+        + visibility_penalty.get(str(visibility).lower(), 15)
+        + traffic_penalty.get(str(traffic).lower(), 10)
+        + driver_penalty.get(str(driver_state).lower(), 15)
+    )
+
+    score = max(0, 100 - penalty)
+
+    if score >= 70:
+        risk_level = "low"
+        explanation = "Driving conditions are safe. No major risk factors detected."
+    elif score >= 40:
+        risk_level = "medium"
+        explanation = "Moderate risk detected. Exercise caution while driving."
+    else:
+        risk_level = "high"
+        explanation = "High risk conditions detected. Driving is not recommended."
+
+    return score, risk_level, explanation
+
+
+# ---------------------------------------------------------------------
 # CLI entry point
 # ---------------------------------------------------------------------
 if __name__ == "__main__":
