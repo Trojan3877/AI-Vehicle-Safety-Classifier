@@ -17,6 +17,21 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.keras.preprocessing import image
 
+# ---------------------------------------------------------------------
+# Penalty tables for rule-based driving-condition classifier
+# ---------------------------------------------------------------------
+# Unknown/unrecognised inputs receive a moderate default penalty.
+_WEATHER_PENALTY = {"clear": 0, "sunny": 0, "rain": 20, "snow": 25, "fog": 30}
+_VISIBILITY_PENALTY = {"high": 0, "medium": 15, "low": 30}
+_TRAFFIC_PENALTY = {"light": 0, "moderate": 10, "heavy": 20}
+_DRIVER_PENALTY = {"alert": 0, "distracted": 20, "drowsy": 30}
+
+# Fallback penalty for unrecognised values in each category
+_DEFAULT_WEATHER_PENALTY = 15
+_DEFAULT_VISIBILITY_PENALTY = 15
+_DEFAULT_TRAFFIC_PENALTY = 10
+_DEFAULT_DRIVER_PENALTY = 15
+
 
 # ---------------------------------------------------------------------
 # Load config
@@ -109,16 +124,11 @@ def classify_driving_conditions(weather: str, visibility: str, traffic: str, dri
         Tuple of (safety_score: int, risk_level: str, explanation: str)
         where safety_score is 0–100, risk_level is "low"/"medium"/"high".
     """
-    weather_penalty = {"clear": 0, "sunny": 0, "rain": 20, "snow": 25, "fog": 30}
-    visibility_penalty = {"high": 0, "medium": 15, "low": 30}
-    traffic_penalty = {"light": 0, "moderate": 10, "heavy": 20}
-    driver_penalty = {"alert": 0, "distracted": 20, "drowsy": 30}
-
     penalty = (
-        weather_penalty.get(str(weather).lower(), 15)
-        + visibility_penalty.get(str(visibility).lower(), 15)
-        + traffic_penalty.get(str(traffic).lower(), 10)
-        + driver_penalty.get(str(driver_state).lower(), 15)
+        _WEATHER_PENALTY.get(str(weather).lower(), _DEFAULT_WEATHER_PENALTY)
+        + _VISIBILITY_PENALTY.get(str(visibility).lower(), _DEFAULT_VISIBILITY_PENALTY)
+        + _TRAFFIC_PENALTY.get(str(traffic).lower(), _DEFAULT_TRAFFIC_PENALTY)
+        + _DRIVER_PENALTY.get(str(driver_state).lower(), _DEFAULT_DRIVER_PENALTY)
     )
 
     score = max(0, 100 - penalty)
