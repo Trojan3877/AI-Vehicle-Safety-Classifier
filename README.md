@@ -113,14 +113,70 @@ AI-Vehicle-Safety-Classifier/ │ ├── train.py ├── predict.py ├─
 git clone https://github.com/Trojan3877/AI-Vehicle-Safety-Classifier.git
 cd AI-Vehicle-Safety-Classifier
 pip install -r requirements.txt
+```
 
 
 
+🚀 Local Run
 
-🚀 Training
+```bash
+# Copy the environment variable template and edit as needed
+cp .env.example .env
 
+# Start the webhook server
+python n8n_webhook.py
+# Server listens on http://0.0.0.0:5000
+
+# Health check
+curl http://localhost:5000/health
+# → {"status": "ok"}
+
+# Classify driving conditions
+curl -X POST http://localhost:5000/n8n/classify \
+  -H "Content-Type: application/json" \
+  -d '{"tool":"classify_conditions","input":{"weather":"rain","visibility":"low","traffic":"heavy","driver_state":"drowsy"}}'
+```
+
+
+
+🐳 Docker
+
+```bash
+# Build the image
+docker build -t ai-vehicle-safety-classifier .
+
+# Run the container
+docker run -p 5000:5000 ai-vehicle-safety-classifier
+
+# Run with a custom port
+docker run -e PORT=8080 -p 8080:8080 ai-vehicle-safety-classifier
+```
+
+
+
+☁️ Cloud Deployment (Render / Heroku)
+
+A `Procfile` is included for Heroku and Render:
+
+```
+web: python n8n_webhook.py
+```
+
+**Environment variables to configure:**
+
+| Variable | Default | Description |
+|---|---|---|
+| `PORT` | `5000` | Port the server listens on |
+
+Copy `.env.example` to `.env` and fill in your values before deploying.
+
+
+
+🧪 Training
+
+```bash
 python train.py --epochs 20 --seed 42
-
+```
 
 
 
