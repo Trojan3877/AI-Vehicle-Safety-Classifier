@@ -1,0 +1,53 @@
+# =============================================================================
+# AI Vehicle Safety Classifier — Docker Ignore
+# =============================================================================
+
+# Version control
+.git
+.gitignore
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Test & coverage artifacts
+.coverage
+coverage.xml
+.pytest_cache/
+htmlcov/
+
+# Large model/data files (mount via volume in production)
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.npz
+
+# IDE / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local environment secrets
+.env
+
+# Raw datasets (too large for image)
+data/train/
+data/val/
+data/test/
+
+# Logs
+artifacts/logs/
+logs/
+*.log

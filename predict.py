@@ -13,9 +13,6 @@ Handles:
 
 import os
 import yaml
-import numpy as np
-import tensorflow as tf
-from tensorflow.keras.preprocessing import image
 
 # ---------------------------------------------------------------------
 # Penalty tables for rule-based driving-condition classifier
@@ -45,6 +42,7 @@ def load_config(config_path="config/config.yaml"):
 # Load best model
 # ---------------------------------------------------------------------
 def load_best_model(config_path="config/config.yaml"):
+    import tensorflow as tf
     config = load_config(config_path)
     model_path = os.path.join(config["paths"]["model_dir"], "best_model.keras")
     return tf.keras.models.load_model(model_path)
@@ -54,6 +52,8 @@ def load_best_model(config_path="config/config.yaml"):
 # Preprocess image to model-ready tensor
 # ---------------------------------------------------------------------
 def preprocess_image(img_path, config_path="config/config.yaml"):
+    import numpy as np
+    from tensorflow.keras.preprocessing import image
 
     config = load_config(config_path)
     target_size = tuple(config["model"]["input_shape"][:2])
@@ -74,6 +74,7 @@ def preprocess_image(img_path, config_path="config/config.yaml"):
 # Predict class from image path
 # ---------------------------------------------------------------------
 def predict_image(img_path, config_path="config/config.yaml"):
+    import numpy as np
 
     # Load model and config
     model = load_best_model(config_path)
