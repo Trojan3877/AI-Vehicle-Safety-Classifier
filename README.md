@@ -167,7 +167,6 @@ web: python n8n_webhook.py
 | Variable | Default | Description |
 |---|---|---|
 | `PORT` | `5000` | Port the server listens on |
-| `FLASK_ENV` | `development` | Set to `production` for deployments |
 
 Copy `.env.example` to `.env` and fill in your values before deploying.
 
